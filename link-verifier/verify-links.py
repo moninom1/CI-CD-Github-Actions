@@ -5,6 +5,7 @@ import sys
 import time
 import argparse
 import re
+import urllib
 import subprocess
 import requests
 import shutil
@@ -13,6 +14,9 @@ from termcolor import cprint
 from multiprocessing import Pool
 import traceback
 from collections import defaultdict
+
+THIS_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+TRUSTED_CA_BUNDLE = os.path.join(THIS_FILE_PATH, 'trusted_certs', 'ca_bundle.crt')
 
 MARKDOWN_SEARCH_TERM = r"\.md$"
 # Regex to find a URL
@@ -170,7 +174,7 @@ def parse_file(html_file):
     return HtmlFile(html_file)
 
 def html_name_from_markdown(filename):
-    md_pattern = re.compile("\.md$", re.IGNORECASE)
+    md_pattern = re.compile(r"\.md$", re.IGNORECASE)
     return md_pattern.sub('.html', filename)
 
 def create_html(markdown_file):
@@ -189,12 +193,94 @@ def create_html(markdown_file):
     )
     return process
 
+def issue_request(method, url, **kwargs):
+    retries = 0
+
+    while retries < 3:
+        r = method(url, **kwargs)
+        if r.status_code == 429:
+            retry_after = int(r.headers.get("Retry-After", 60))
+            time.sleep(retry_after)
+            retries += 1
+        else:
+            return r
+    raise Exception("Max retries exceeded")
+
+def access_url(url):
+    global http_headers
+    status = ''
+    is_broken = False
+    try_with_trusted_ca_bundle = False
+
+    try:
+        r = issue_request(requests.head, url, allow_redirects=True, headers=http_headers)
+        # Some sites may return 404 for head but not get, e.g.
+        # https://tls.mbed.org/kb/development/thread-safety-and-multi-threading
+        if r.status_code >= 400:
+            # Allow redirects is already enabled by default for GET.
+            r = issue_request(requests.get, url, headers=http_headers)
+
+        if r.status_code >= 400:
+            is_broken = True
+        status = r.status_code
+    except requests.exceptions.SSLError as e:
+        print(str(e))
+        try_with_trusted_ca_bundle = True
+    except Exception as e:
+        print(str(e))
+        is_broken = True
+        status = 'Error'
+
+    if try_with_trusted_ca_bundle == True:
+        try:
+            r = issue_request(requests.head, url, allow_redirects=True, headers=http_headers, verify=TRUSTED_CA_BUNDLE)
+            # Some sites may return 404 for head but not get, e.g.
+            # https://tls.mbed.org/kb/development/thread-safety-and-multi-threading
+            if r.status_code >= 400:
+                # Allow redirects is already enabled by default for GET.
+                r = issue_request(requests.get, url, headers=http_headers, verify=TRUSTED_CA_BUNDLE)
+
+            if r.status_code >= 400:
+                is_broken = True
+            status = r.status_code
+        except Exception as e:
+            print(str(e))
+            is_broken = True
+            status = 'Error'
+
+    # Use curl as a fallback.
+    if is_broken == True:
+        curl_cmd = f'curl -sIL -o /dev/null -w "%{{http_code}}" {url}'
+        process = subprocess.run(
+            curl_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True,
+            encoding="utf-8",
+            universal_newlines=True
+        )
+        http_status_code = int(process.stdout)
+        if http_status_code == 200:
+            is_broken = False
+            status = http_status_code
+
+    # Use urllib as a fallback.
+    if is_broken == True:
+        req = urllib.request.Request(url, headers=http_headers)
+        try:
+            response = urllib.request.urlopen(req)
+            is_broken = False
+            status = response.getcode()
+        except (urllib.error.HTTPError, urllib.error.URLError) as e:
+            print(f"urllib: {url} error: {e}")
+
+    return is_broken, status
+
 def test_url(url):
     """Tests a single url"""
     global use_gh_cache
     global main_repo_list
     global link_cache
-    global http_headers
     status = ''
     is_broken = False
     # Test if link was already tested before.
@@ -215,26 +301,8 @@ def test_url(url):
                 if int(issue_match.group(3)) in main_repo_list[repo_key][ISSUE_KEY]:
                     status = 'Good'
     if status != 'Good':
-        try:
-            r = requests.head(url, allow_redirects=True, headers=http_headers)
-            # Some sites may return 404 for head but not get, e.g.
-            # https://tls.mbed.org/kb/development/thread-safety-and-multi-threading
-            if r.status_code >= 400:
-                # Allow redirects is already enabled by default for GET.
-                r = requests.get(url, headers=http_headers)
-            # It's likely we will run into GitHub's rate-limiting if there are many links.
-            if r.status_code == 429:
-                time.sleep(int(r.headers['Retry-After']))
-                r = requests.head(url, allow_redirects=True)
-            if r.status_code >= 400:
-                is_broken = True
-            status = r.status_code
-        # requests.exceptions.ConnectionError if URL does not exist, but we capture
-        # all possible exceptions from trying the link to be safe.
-        except Exception as e:
-            print(str(e))
-            is_broken = True
-            status = 'Error'
+        is_broken, status = access_url(url)
+
     # Add result to cache so it won't be tested again.
     link_cache[url] = (is_broken, status)
     return is_broken, status

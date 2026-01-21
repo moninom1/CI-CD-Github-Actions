@@ -26,13 +26,13 @@ inputs:
   doxygen_dependencies:
     description: 'Space-separated dependencies for doxygen.'
     required: false
-    default: libclang-11-dev libclang-cpp11 graphviz
+    default: libclang-18-dev libclang-cpp18 graphviz
 
 runs:
   using: "composite"
   steps:
     - name: Checkout the repo for generating doxygen
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.1.1
       with:
         path: doxygen_source
         ref: ${{ inputs.ref }}
@@ -40,10 +40,20 @@ runs:
     - name: Install Doxygen
       shell: bash
       run: |
-        wget -O doxygen.tgz "${{ inputs.doxygen_link }}"
+        wget -O "$HOME/doxygen.tgz" "${{ inputs.doxygen_link }}"
         if [ $? -ne 0 ]; then exit 1; fi
-        sudo tar --strip-components=1 -xzf doxygen.tgz -C /usr/local
-        sudo apt-get install -y ${{ inputs.doxygen_dependencies }}
+
+        EXPECTED_MD5="b6193a16bc5128597f5affd878dbd7b7"
+        GENERATED_MD5=$(md5sum "$HOME/doxygen.tgz" | awk '{print $1}')
+
+        if [ "$GENERATED_MD5" = "$EXPECTED_MD5" ]; then
+          sudo tar --strip-components=1 -xzf "$HOME/doxygen.tgz" -C /usr/local
+          sudo apt-get install -y ${{ inputs.doxygen_dependencies }}
+        else
+          echo -e "${{ env.bashFail }} MD5 checksum verification failed for doxygen.tgz ${{ env.bashEnd }}"
+          echo -e "${{ env.bashFail }} ${{ env.stepName }} ${{ env.bashEnd }}"
+          exit -1          
+        fi
 
     - name: Generate doxygen
       working-directory: ./doxygen_source
@@ -51,7 +61,7 @@ runs:
       run: ${{ inputs.generate_command }}
 
     - name: Checkout the repo for storing doxygen
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.1.1
       with:
         path: doxygen_store
 
@@ -107,8 +117,9 @@ runs:
       run: |
         jq '.releases|=if index("${{ inputs.ref }}") then . else ["${{ inputs.ref }}"]+. end' _data/doc_config.json > tmp.json
         mv tmp.json _data/doc_config.json
-        rm -f latest
-        ln -s "${{ inputs.ref }}" latest
+        rm -rf latest
+        mkdir latest
+        cp -r "${{ inputs.ref }}"/* latest
 
     - name: Commit new doxygen
       working-directory: ./doxygen_store

@@ -16,9 +16,9 @@ env:
 
 jobs:
   uncrustify-formatting-success-cases:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.1.1
 
     - env:
         stepName: "Functional | Success | Exclude Files and Dirs"
@@ -37,7 +37,6 @@ jobs:
       uses: ./formatting
       with:
         path: formatting/goodFiles
-        exclude-dirs: ",,,"
         exclude-files: "errorFileInDirectory.h, formatErrorTest.h, errorFileInDirectory.c, formatErrorTest.c"
 
     - name: Remove Error Files at Top Directory
@@ -59,9 +58,9 @@ jobs:
         exclude-dirs: "fileWithErrorInclude, fileWithErrorSource"
 
   uncrustify-formatting-error-cases:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.1
       - env:
           stepName: "Functional | Failure | Whitespace, CRLF, and Format Failure"
         name: ${{ env.stepName }}
@@ -297,7 +296,7 @@ jobs:
   clang-formatting-success-cases:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.1.1
 
     - env:
         stepName: "Functional | Success | Exclude Files and Dirs"
@@ -316,7 +315,6 @@ jobs:
       uses: ./clang-formatting
       with:
         path: clang-formatting/goodFiles
-        exclude-dirs: ",,,"
         exclude-files: "errorFileInDirectory.h, formatErrorTest.h, errorFileInDirectory.c, formatErrorTest.c"
 
     - name: Remove Error Files at Top Directory
@@ -340,7 +338,7 @@ jobs:
   clang-formatting-error-cases:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.1
       - env:
           stepName: "Functional | Failure | Whitespace, CRLF, and Format Failure"
         name: ${{ env.stepName }}

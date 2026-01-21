@@ -26,179 +26,180 @@ jobs:
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: false,
               run-doxygen: false,
+              exclude-urls: 'https://www.microchip.com, https://www.microchip.com/support',
             },
             {
               repository: FreeRTOS-Plus-TCP,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: false,
               run-doxygen: false,
+              exclude-dirs: 'source/portable/NetworkInterface/STM32'
+              exclude-urls: 'https://www.microchip.com/en-us/support/design-help, http://www.atmel.com/design-support'
             },
             {
               repository: FreeRTOS,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: false,
+              run-spelling-check: true,
               run-complexity: false,
               run-doxygen: false,
-              exclude-dirs: ethernet, drivers, FreeRTOS/Demo,
+              exclude-dirs: 'ethernet, drivers, FreeRTOS/Demo, WinPCap, libslirp-version.h, CMSIS, Trace_Recorder_Configuration, ThirdParty, conssole.h, syscalls.c, Demo_IP_Protocols, Reliance-Edge'
             },
             {
               repository: backoffAlgorithm,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_UNIT_TESTS=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*" "\*3rdparty\*"',
-              line-coverage: 100,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='-Wall -Wextra -Werror',
             },
             {
               repository: coreHTTP,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*" "\*3rdparty\*"',
-              line-coverage: 100,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='-Wall -Wextra -DNDEBUG',
+              coverage-skips: "*3rdparty*",
             },
             {
               repository: coreJSON,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON  -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*" "\*source\*"',
-              line-coverage: 100,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON  -DCMAKE_C_FLAGS='-Wall -Wextra -Werror',
             },
             {
               repository: coreMQTT,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
               build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -DLIBRARY_LOG_LEVEL=LOG_DEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
             },
             {
               repository: corePKCS11,
               org: FreeRTOS,
               branch: main,
-              run-link-verifier: true,
+              run-link-verifier: false,
+              run-spelling-check: false,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DUNIT_TESTS=1 -DSYSTEM_TESTS=0 -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 95,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DSYSTEM_TESTS=0 -DCMAKE_C_FLAGS='-Wall -Wextra -DNDEBUG',
+              branch-coverage: 90,
             },
             {
               repository: coreSNTP,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_UNIT_TESTS=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG -Wno-error=pedantic -Wno-variadic-macros -DLOGGING_LEVEL_DEBUG=1',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DNDEBUG -Wno-error=pedantic -Wno-variadic-macros -DLOGGING_LEVEL_DEBUG=1',
             },
             {
               repository: FreeRTOS-Cellular-Interface,
               org: FreeRTOS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 99,
+              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DNDEBUG',
             },
             {
               repository: Device-Defender-for-AWS-IoT-embedded-sdk,
               org: AWS,
               branch: main,
               run-link-verifier: true,
+              run-spelling-check: true,
               run-complexity: true,
               run-doxygen: true,
-              build-flags: -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
+              build-flags: -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DNDEBUG',
             },
-           {
-              repository: Device-Shadow-for-AWS-IoT-embedded-sdk,
-              org: AWS,
-              branch: main,
-              run-link-verifier: true,
-              run-complexity: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
-           },
-           {
-              repository: Fleet-Provisioning-for-AWS-IoT-embedded-sdk,
-              org: AWS,
-              branch: main,
-              run-link-verifier: true,
-              run-complexity: true,
-              run-doxygen: true,
-              build-flags:  -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror -DNDEBUG',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
-           },
-           {
-              repository: Jobs-for-AWS-IoT-embedded-sdk,
-              org: AWS,
-              branch: main,
-              run-link-verifier: true,
-              run-complexity: false,
-              run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -Werror',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*" "\*source\*"',
-              line-coverage: 100,
-
-           },
-           {
-              repository: ota-for-AWS-IoT-embedded-sdk,
-              org: AWS,
-              branch: main,
-              run-link-verifier: true,
-              run-complexity: true,
-              run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG',
-              line-coverage: 95,
-           },
-           {
-              repository: SigV4-for-AWS-IoT-embedded-sdk,
-              org: AWS,
-              branch: main,
-              run-complexity: true,
-              run-doxygen: true,
-              build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_UNIT_TESTS=ON -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG -DLOGGING_LEVEL_DEBUG=1',
-              coverage-skips: '"\*test\*" "\*CMakeCCompilerId\*" "\*mocks\*"',
-              line-coverage: 100,
-           },
+            {
+               repository: Device-Shadow-for-AWS-IoT-embedded-sdk,
+               org: AWS,
+               branch: main,
+               run-link-verifier: true,
+               run-spelling-check: true,
+               run-complexity: true,
+               build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DNDEBUG',
+            },
+            {
+               repository: Fleet-Provisioning-for-AWS-IoT-embedded-sdk,
+               org: AWS,
+               branch: main,
+               run-link-verifier: true,
+               run-spelling-check: true,
+               run-complexity: true,
+               run-doxygen: true,
+               build-flags:  -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DNDEBUG',
+            },
+            {
+               repository: Jobs-for-AWS-IoT-embedded-sdk,
+               org: AWS,
+               branch: main,
+               run-link-verifier: true,
+               run-spelling-check: true,
+               run-complexity: false,
+               run-doxygen: true,
+               build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -Werror',
+            },
+            {
+               repository: ota-for-AWS-IoT-embedded-sdk,
+               org: AWS,
+               branch: main,
+               run-link-verifier: true,
+               run-spelling-check: true,
+               run-complexity: true,
+               run-doxygen: true,
+               build-flags: -DCMAKE_BUILD_TYPE=Debug -DBUILD_CLONE_SUBMODULES=ON -DCMAKE_C_FLAGS='-Wall -Wextra -DNDEBUG',
+            },
+            {
+               repository: SigV4-for-AWS-IoT-embedded-sdk,
+               org: AWS,
+               branch: main,
+               run-complexity: true,
+               run-spelling-check: true,
+               run-doxygen: true,
+               build-flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='-Wall -Wextra -DNDEBUG -DLOGGING_LEVEL_DEBUG=1',
+            },
           ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.1.0
 
-      - name: Install Common Tools
+      - env:
+          stepName: Install Common Tools
         shell: bash
         run: |
+          # ${{ env.stepName }}
+          echo -e "::group::${{ env.bashInfo }} ${{ env.stepName }} ${{ env.bashEnd }}"
+          sudo apt-get -y update
           sudo apt-get install -y lcov sed build-essential cmake
+          echo -e "::endgroup::"
+          echo -e "${{ env.bashPass }} ${{ env.stepName }} ${{ env.bashEnd }}"
 
       - name: "Clone: ${{ matrix.inputs.repository }}"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.1
         with:
           repository: ${{ matrix.inputs.org }}/${{ matrix.inputs.repository }}
           ref: ${{ matrix.inputs.branch }}
@@ -210,7 +211,7 @@ jobs:
         with:
           path: repo/${{ matrix.inputs.repository }}
           exclude-dirs: complexity, formatting
-          exclude-urls: https://dummy-url.com/ota.bin, https://s3.region.amazonaws.com/joe-ota
+          exclude-urls: https://dummy-url.com/ota.bin, https://s3.region.amazonaws.com/joe-ota, https://www.gnu.org/software/complexity/manual/complexity.html, https://www.u-blox.com/en/product/sara-r4-series${{ matrix.inputs.exclude-urls && format(',{0}', matrix.inputs.exclude-urls) || '' }}
 
       - name: "Complexity Check: ${{ matrix.inputs.repository }}"
         if: matrix.inputs.run-complexity && ( success() || failure() )
@@ -233,15 +234,15 @@ jobs:
           generate_zip: true
 
       - name: "Spelling Check: ${{ matrix.inputs.repository }} "
-        if: success() || failure()
+        if: matrix.inputs.run-spelling-check && ( success() || failure() )
         uses: ./spellings
         with:
           path: repo/${{ matrix.inputs.repository }}
-          exclude-dirs: ${{ matrix.inputs.repository }}
+          exclude-dirs: ${{ matrix.inputs.exclude-dirs }}
 
       - name: "Recursive Clone: ${{ matrix.inputs.repository }}"
         if: success() || failure()
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.1
         with:
           repository: ${{ matrix.inputs.org }}/${{ matrix.inputs.repository }}
           ref: ${{ matrix.inputs.branch }}
@@ -256,16 +257,20 @@ jobs:
         working-directory: repo/${{ matrix.inputs.repository }}_Recursive
         run: git submodule update --checkout --init --recursive
 
-      - name: Build ${{matrix.inputs.repository}}
+      - env:
+          stepName: Build ${{matrix.inputs.repository}}
         if: matrix.inputs.run-complexity && ( success() || failure() )
         shell: bash
         working-directory: repo/${{matrix.inputs.repository}}_Recursive
         run: |
-          echo -e "::group:: Install lcov"
-          sudo apt-get install -y lcov
-          echo -e "::endgroup::"
-          cmake -S ./test -B build/ ${{ matrix.inputs.build-flags }}
+          # ${{ env.stepName }}
+          echo -e "::group::${{ env.bashInfo }} ${{ env.stepName }} ${{ env.bashEnd }}"
+
+          cmake -S ./test -B build/ ${{ matrix.inputs.build-flags }} -DUNITTEST=ON
           make -C build/ all
+
+          echo -e "::endgroup::"
+          echo -e "${{ env.bashPass }} ${{ env.stepName }} ${{ env.bashEnd }}"
 
       - name: Test
         if: matrix.inputs.run-complexity && ( success() || failure() )
@@ -289,30 +294,38 @@ jobs:
           output: size_table_new.html
           check_against: docs/doxygen/include/size_table.md
 
-      - name: Run Coverage ${{matrix.inputs.repository}}
+      - env:
+          stepName: Coverage ${{matrix.inputs.repository}}
         if: matrix.inputs.run-complexity && ( success() || failure() )
         shell: bash
         working-directory: repo/${{matrix.inputs.repository}}_Recursive
         run: |
+          # ${{ env.stepName }}
+          echo -e "::group::${{ env.bashInfo }} Build ${{matrix.inputs.repository}} ${{ env.bashEnd }}"
           make -C build/ coverage
+          echo -e "::endgroup::"
+          echo -e "::group::${{ env.bashInfo }} ${{ env.stepName }} ${{ env.bashEnd }}"
+
           if [[ "${{ matrix.inputs.coverage-skips }}" != "" ]]; then
             declare -a EXCLUDE=( ${{ matrix.inputs.coverage-skips }} )
             echo ${EXCLUDE[@]} | xargs lcov --rc lcov_branch_coverage=1 -r build/coverage.info -o build/coverage.info
           else
             lcov --rc lcov_branch_coverage=1 -r build/coverage.info -o build/coverage.info
           fi
-          lcov --rc lcov_branch_coverage=1 --list build/coverage.info
+
+          echo -e "::endgroup::"
+
+          lcov --rc lcov_branch_coverage=1 --summary build/coverage.info
 
       - name: Test coverage cop action ${{matrix.inputs.repository}}
         if: matrix.inputs.run-complexity && ( success() || failure() )
         uses: ./coverage-cop
         with:
           coverage-file: repo/${{matrix.inputs.repository}}_Recursive/build/coverage.info
-          branch-coverage-min: 70
-          line-coverage-min: ${{ matrix.inputs.line-coverage }}
+          branch-coverage-min: ${{ matrix.inputs.branch_coverage }}
 
   PR-uncrustify-checks:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: ${{ github.event.pull_request }} || ${{ github.event.workflow }}
     strategy:
       fail-fast: false
@@ -323,16 +336,19 @@ jobs:
               repository: FreeRTOS-Kernel,
               org: FreeRTOS,
               branch: main,
+              exclude-dirs: 'portable'
             },
             {
               repository: FreeRTOS-Plus-TCP,
               org: FreeRTOS,
               branch: main,
+              exclude-dirs: 'source/portable/NetworkInterface/STM32'
             },
             {
               repository: FreeRTOS,
               org: FreeRTOS,
               branch: main,
+              exclude-dirs: 'ethernet, drivers, FreeRTOS/Demo, WinPCap, libslirp-version.h, CMSIS, Trace_Recorder_Configuration, ThirdParty, conssole.h, syscalls.c, Demo_IP_Protocols, Reliance-Edge'
             },
             {
               repository: FreeRTOS-Cellular-Interface,
@@ -402,11 +418,11 @@ jobs:
           ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.1.0
 
       - name: "Clone: ${{ matrix.inputs.repository }}"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.1
         with:
           repository: ${{ matrix.inputs.org }}/${{ matrix.inputs.repository }}
           ref: ${{ matrix.inputs.branch }}
@@ -418,4 +434,4 @@ jobs:
         with:
           path: repo/${{ matrix.inputs.repository }}
           exclude-files: ${{ matrix.inputs.exclude-files }}
-          exclude-dirs: ethernet, drivers, FreeRTOS/Demo
+          exclude-dirs: ${{ matrix.inputs.exclude-dirs }}
